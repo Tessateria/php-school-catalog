@@ -9,6 +9,11 @@ use App\LogsClass\Logger;
 
 class FormController
 {
+    public function __construct()
+    {
+        $this->logger = new Logger();
+    }
+
     public function index($params = [])
     {
         $query = new Query;
@@ -27,6 +32,9 @@ class FormController
             "SELECT * FROM forms WHERE id = ?",
             [$params['id']]
         );
+        if (empty($form)){
+            $this->logger->log('error', "{$params['id']} does not exist", $params['id']);
+        }
 
         return new TemplateView('form_view', [
             'form' => $form
